@@ -1,0 +1,136 @@
+#include<iostream>
+using namespace std;
+
+int lagrange_int(int X, int n, int x[], int y[]) {
+    int sum = 0;
+    for (int i = 0; i < n; i++) {
+        int term = 1;
+        for (int j = 0; j < n; j++) {
+            if (i != j) {
+                term = term * ((X - x[j]) / (x[i] - x[j]));
+            }
+        }
+        sum = sum + term * y[i];
+    }
+    return sum;
+}
+
+int main() {
+    int n, X = 2.5;
+    cout << "Enter the n term:" << endl;
+    cin >> n;
+
+    int x[n], y[n];
+    cout << "Enter the value of x:" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> x[i];
+    }
+
+    cout << "Enter the value of y:" << endl;
+    for (int i = 0; i < n; i++) {
+        cin >> y[i];
+    }
+
+    int result = lagrange_int(X, n, x, y);
+    cout << "The Lagrange interpolation at X=" << X << " is: " << result << endl;
+
+    return 0;
+}
+
+
+//Q2.implement least square approximation for linear data.
+
+#include <iostream>
+#include <iomanip>
+using namespace std;
+
+int main() {
+    int n;
+    cout << "Enter the number of data points: ";
+    cin >> n;
+
+    double x[n], y[n];
+    
+    cout << "Enter the x values: ";
+    for (int i = 0; i < n; i++) {
+        cin >> x[i];
+    }
+
+    cout << "Enter the y values: ";
+    for (int i = 0; i < n; i++) {
+        cin >> y[i];
+    }
+
+    // Calculate summations
+    double sum_x = 0, sum_y = 0, sum_x2 = 0, sum_xy = 0;
+    
+    for (int i = 0; i < n; i++) {
+        sum_x += x[i];
+        sum_y += y[i];
+        sum_x2 += x[i] * x[i];
+        sum_xy += x[i] * y[i];
+    }
+
+    // Solving for b (slope) and a (intercept)
+    double b = (n * sum_xy - sum_x * sum_y) / (n * sum_x2 - sum_x * sum_x);
+    double a = (sum_y - b * sum_x) / n;
+
+    // Display the equation of the best-fit line
+    cout << "\nEquation of best-fit line: y = " << a << " + " << b << "x" << endl;
+
+    // Display observed and fitted values
+    cout << "\nData and Fitted Values:\n";
+    cout << "-----------------------------------\n";
+    cout << "  x    | y(observed) | y(fitted) \n";
+    cout << "-----------------------------------\n";
+    
+    for (int i = 0; i < n; i++) {
+        double y_fitted = a + b * x[i];
+        cout << fixed << setprecision(2);
+        cout << setw(5) << x[i] << "  |  " << setw(10) << y[i] << "  |  " << setw(10) << y_fitted << endl;
+    }
+
+    return 0;
+}
+
+
+//Q3
+Function NewtonForwardInterpolation(X, n, x[], y[]):
+    Initialize a 2D array a[n][n] for the difference table
+    For i from 0 to n-1:
+        a[i][0] = x[i]   // Fill the first column with x values
+        a[i][1] = y[i]   // Fill the second column with y values
+    
+    // Calculate the forward differences
+    For j from 2 to n:
+        For i from 0 to n-j:
+            a[i][j] = a[i+1][j-1] - a[i][j-1]  // Calculate the forward difference
+
+    // Print the difference table
+    Print difference table a[][]
+
+    // Calculate u (h is the difference between consecutive x values)
+    u = (X - x[0]) / (x[1] - x[0])
+
+    // Initialize y, u1, and fact
+    y = a[0][1]  // Initial y value (f(x0))
+    u1 = u       // First u value
+    fact = 1     // Factorial initialization
+
+    // Apply Newton's Forward formula to find the value of y at X
+    For i from 2 to n:
+        y = y + (u1 * a[0][i]) / fact
+        fact = fact * i    // Update factorial
+        u1 = u1 * (u - (i - 1))  // Update u1 for the next iteration
+    
+    Return y
+
+Main:
+    Read n  // Number of data points
+    Read x[]  // Known x-coordinates
+    Read y[]  // Known y-coordinates
+    Read X  // Value of x for which interpolation is needed
+    result = NewtonForwardInterpolation(X, n, x, y)
+    Print "Interpolated value at X=", X, "is", result
+
+
